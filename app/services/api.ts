@@ -1,4 +1,33 @@
-import { GET_CATERING_SERVICES, GET_MUSIC_SERVICES } from "../graphql/queries"
+// Interfaces
+interface CreateServiceDTO {
+  name: string
+  price: number
+}
+
+interface UpdateServiceDTO {
+  name: string
+  price: number
+}
+
+// Catering Services
+export const createCateringService = async (serviceData: { name: string; price: number }) => {
+  const response = await fetch("http://44.208.178.247:8071/cateringC/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(serviceData),
+  });
+
+  const contentType = response.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  } else {
+    // ✅ Si la API devuelve texto en lugar de JSON, lo manejamos correctamente
+    return { message: await response.text() };
+  }
+};
+
+
 
 export async function fetchCateringServices() {
   try {
@@ -8,28 +37,83 @@ export async function fetchCateringServices() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: GET_CATERING_SERVICES,
+        query: `
+          query {
+            getAllCatering {
+              id_catering
+              name
+              price
+            }
+          }
+        `,
       }),
     })
-
-    const data = await response.json();
-
-
-    console.log("Response from API:", data); // Verificar la respuesta en consola
-
-    if (!data.data || !data.data.getAllCatering) {
-      console.error("Error: Datos de catering no disponibles");
-      return [];
-    }
-
-
-
+    const data = await response.json()
     return data.data.getAllCatering
   } catch (error) {
     console.error("Error fetching catering services:", error)
-    return []
+    throw error
   }
 }
+export async function updateCateringService(id: string, data: { name: string; price: number }) {
+  try {
+    const response = await fetch(`http://44.208.178.247:8073/cateringU/update/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error updating catering service:", error);
+    throw error;
+  }
+}
+
+
+
+export async function deleteCateringService(id: string) {
+  try {
+    const response = await fetch(`http://44.208.178.247:8074/cateringD/delete/${id}`, {
+      method: "DELETE",
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error deleting decoration service:", error);
+    throw error;
+  }
+}
+
+// Music Services
+export const createMusicService = async (serviceData: { name: string; price: number }) => {
+  const response = await fetch("http://54.173.57.181:8061/musicC/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(serviceData),
+  });
+
+  const contentType = response.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  } else {
+    // ✅ Si la API devuelve texto en lugar de JSON, lo manejamos correctamente
+    return { message: await response.text() };
+  }
+};
 
 export async function fetchMusicServices() {
   try {
@@ -49,22 +133,71 @@ export async function fetchMusicServices() {
           }
         `,
       }),
-    });
-
-    const data = await response.json();
-    console.log("Response from API (Music):", data); // LOG IMPORTANTE
-
-    if (!data.data || !data.data.getAllMusic) {
-      console.error("Error: Datos de música no disponibles");
-      return [];
-    }
-
-    return data.data.getAllMusic;
+    })
+    const data = await response.json()
+    return data.data.getAllMusic
   } catch (error) {
-    console.error("Error fetching music services:", error);
-    return [];
+    console.error("Error fetching music services:", error)
+    throw error
   }
 }
+
+export async function updateMusicService(id: string, data: { name: string; price: number }) {
+  try {
+    const response = await fetch(`http://54.173.57.181:8063/musicU/update/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error updating catering service:", error);
+    throw error;
+  }
+}
+export async function deleteMusicService(id: string) {
+  try {
+    const response = await fetch(`http://184.72.70.45:8064/musicD/delete/${id}`, {
+      method: "DELETE",
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error deleting decoration service:", error);
+    throw error;
+  }
+}
+
+// Decoration Services
+export const createDecorationService = async (serviceData: { name: string; price: number }) => {
+  const response = await fetch("http://44.212.202.69:8041/decorationC/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(serviceData),
+  });
+
+  const contentType = response.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  } else {
+    // ✅ Si la API devuelve texto en lugar de JSON, lo manejamos correctamente
+    return { message: await response.text() };
+  }
+};
 
 
 export async function fetchDecorationServices() {
@@ -85,22 +218,77 @@ export async function fetchDecorationServices() {
           }
         `,
       }),
-    });
-
-    const data = await response.json();
-    console.log("Response from API (Decoration):", data); // LOG IMPORTANTE
-
-    if (!data.data || !data.data.getAllDecoration) {
-      console.error("Error: Datos de decoration no disponibles");
-      return [];
-    }
-
-    return data.data.getAllDecoration;
+    })
+    const data = await response.json()
+    return data.data.getAllDecoration
   } catch (error) {
-    console.error("Error fetching decoration services:", error);
-    return [];
+    console.error("Error fetching decoration services:", error)
+    throw error
   }
 }
+
+export async function updateDecorationService(id: string, data: { name: string; price: number }) {
+  try {
+    const response = await fetch(`http://44.212.202.69:8043/decorationU/update/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error updating catering service:", error);
+    throw error;
+  }
+}
+
+
+export async function deleteDecorationService(id: string) {
+  try {
+    const response = await fetch(`http://44.212.202.69:8044/decorationD/delete/${id}`, {
+      method: "DELETE",
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error deleting decoration service:", error);
+    throw error;
+  }
+}
+
+
+// Photography Services
+
+export const createPhotographyService = async (serviceData: { name: string; price: number }) => {
+  const response = await fetch("http://3.229.141.153:8051/photographyC/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(serviceData),
+  });
+
+  const contentType = response.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  } else {
+    // ✅ Si la API devuelve texto en lugar de JSON, lo manejamos correctamente
+    return { message: await response.text() };
+  }
+};
+
+
 
 
 export async function fetchPhotographyServices() {
@@ -121,19 +309,131 @@ export async function fetchPhotographyServices() {
           }
         `,
       }),
-    });
-
-    const data = await response.json();
-    console.log("Response from API (Photography):", data); // LOG IMPORTANTE
-
-    if (!data.data || !data.data.getAllPhotography) {
-      console.error("Error: Datos de photography no disponibles");
-      return [];
-    }
-
-    return data.data.getAllPhotography;
+    })
+    const data = await response.json()
+    return data.data.getAllPhotography
   } catch (error) {
-    console.error("Error fetching photography services:", error);
-    return [];
+    console.error("Error fetching photography services:", error)
+    throw error
   }
 }
+
+export async function updatePhotographyService(id: string, data: { name: string; price: number }) {
+  try {
+    const response = await fetch(`http://3.229.141.153:8053/photographyU/update/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error updating catering service:", error);
+    throw error;
+  }
+}
+
+
+export async function deletePhotographyService(id: string) {
+  try {
+    const response = await fetch(`http://3.229.141.153:8054/photographyD/delete/${id}`, {
+      method: "DELETE",
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return { message: await response.text() }; // ✅ Manejo de texto plano
+    }
+  } catch (error) {
+    console.error("Error deleting decoration service:", error);
+    throw error;
+  }
+}
+
+// User Management API calls
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+interface CreateUserDTO {
+  name: string
+  email: string
+  password: string
+}
+
+export async function fetchUsers(): Promise<User[]> {
+  try {
+    const response = await fetch("http://13.216.230.146:3001/api/users")
+    if (!response.ok) {
+      throw new Error("Failed to fetch users")
+    }
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching users:", error)
+    throw error
+  }
+}
+
+export async function createUser(userData: CreateUserDTO): Promise<User> {
+  try {
+    const response = await fetch("http://13.216.230.146:3006/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+    if (!response.ok) {
+      throw new Error("Failed to create user")
+    }
+    return await response.json()
+  } catch (error) {
+    console.error("Error creating user:", error)
+    throw error
+  }
+}
+
+export async function updateUser(id: string, userData: Partial<User>): Promise<User> {
+  try {
+    const response = await fetch(`http://13.216.230.146:3000/api/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+    if (!response.ok) {
+      throw new Error("Failed to update user")
+    }
+    return await response.json()
+  } catch (error) {
+    console.error("Error updating user:", error)
+    throw error
+  }
+}
+
+export async function deleteUser(id: string): Promise<void> {
+  try {
+    const response = await fetch(`http://13.216.230.146:3002/api/users/${id}`, {
+      method: "DELETE",
+    })
+    if (!response.ok) {
+      throw new Error("Failed to delete user")
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error)
+    throw error
+  }
+}
+
